@@ -1,26 +1,15 @@
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import "./App.css";
+import Main from "./pages/Main";
+import Registration from "./pages/Registration";
 
-import React from "react"
-import { Provider } from "react-redux"
-import store from "./common/redux/store"
-import {
-  Redirect,
-  Route,
-  BrowserRouter as Router,
-  Switch,
-} from "react-router-dom"
-
-import { Login } from './login/ui/login'
-
-const App = () => {
+function App() {
   return (
-    <Provider store = {store}>
-      <Router>
-        <Switch>
-          <Route exact path = "/login" component={Login} />
-        </Switch>
-      </Router>
-    </Provider>
+    <Router>
+      <Route path="/registration" exact render={(props) => <Registration />} />
+      <Route path="/" exact render={(props) => <Main />} />
+    </Router>
   );
 }
 
