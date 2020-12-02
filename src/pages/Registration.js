@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import "../App.css";
-import { response } from "express";
+// import { response } from "express";
 
 export default function Registration() {
   const [usernameReg, setUsernameReg] = useState("");
