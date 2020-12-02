@@ -28,7 +28,7 @@ export default function Registration() {
       password: password,
     }).then((response) => {
       console.log(response);
-      if (response.data.auth) {
+      if (!response.data.auth) {
         setLoginStatus(false);
       } else {
         console.log(response.data);
