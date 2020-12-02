@@ -33,7 +33,7 @@ export default function Registration() {
         setLoginStatus(false);
       } else {
         console.log(response.data);
-        localStorage.setItem("token", "Bearer " + response.data.token)
+        localStorage.setItem("token", response.data.token);
         setLoginStatus(true);
       }
     });
