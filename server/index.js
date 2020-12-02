@@ -63,6 +63,31 @@ app.post("/register", (req, res) => {
   });
 });
 
+const verifyJWT = (req, res, next) => {
+  const token = req.headers["x-access-token"]
+
+  if (!token){
+    res.send("Yo! we need a token, try again.")
+  } else {
+    jwt.verify(token, "jwtSecret", (err, decoded) => {
+      if (err) {
+        res.json({auth: false, message: "Failed to authenticate!"});
+      } else {
+        req.userId = decoded.id;
+        next();
+      }
+    });
+  }
+};
+
+
+// make a request to endpoint. pass in middleware we create, verifyJWT, to verify whenever we call this endpoint that 
+// user has the correct endpoint. we have to aapply this same middleware to every other request because all other requests
+// will be sensitive. make sure middleware is created above request!!!
+app.get('/isUserAuth', verifyJWT, (req, res) => {
+  res.send("Authentication Confirmed. OMW2FYB")
+})
+
 app.get("/login", (req, res) => {
   if (req.session.user) {
     res.send({ loggedIn: true, user: req.session.user });
@@ -84,7 +109,7 @@ app.post("/login", (req, res) => {
       if (err) {
         res.send({ err: err });
       }
-
+// WHEN YOU LOG IN TO AN ACCOUNT YOU CREATE A TOKEN
       if (result.length > 0) {
         bcrypt.compare(password, result[0].password, (error, response) => {
           if (response) {
