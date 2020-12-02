@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import "../App.css";
+import { response } from "express";
 
 export default function Registration() {
   const [usernameReg, setUsernameReg] = useState("");
@@ -32,6 +33,7 @@ export default function Registration() {
         setLoginStatus(false);
       } else {
         console.log(response.data);
+        localStorage.setItem("token", "Bearer " + response.data.token)
         setLoginStatus(true);
       }
     });
@@ -44,6 +46,16 @@ export default function Registration() {
       }
     });
   }, []);
+
+  const userAuthenticated = () => {
+    Axios.get("http://localhost:3001/isUserAuth", {
+      headers: {
+        "x-access-token": localStorage.getItem("token"),
+      },
+    }).then((response)=>{
+        console.log(response);
+      });
+  };
 
   return (
     <div className="App">
@@ -84,8 +96,10 @@ export default function Registration() {
         />
         <button onClick={login}> Login </button>
       </div>
+      {/* adding a button, to confirm for development purposes only, that user is authenticated. button only appears
+      once if they are. check console for any messages after button shows to further confirm. */}
       {loginStatus && (
-        <button>check if authenticated</button>
+        <button onClick={userAuthenticated}>check if authenticated</button>
       )}
       <h1>{loginStatus}</h1>
     </div>
