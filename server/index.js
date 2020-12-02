@@ -123,14 +123,26 @@ app.post("/login", (req, res) => {
             req.session.user = result;
             // WE HAVE TO SEND TOKEN TO FRONT END
           // check if user is authorized then pass token we createad and pass all results all info from users: id, username, role, group whatever.
-            res.json({auth: true, token: token, result: result});
+            res.json({
+              auth: true, 
+              token: token, 
+              result: result
+            });
             console.log(req.session.user);
           } else {
-            res.send({ message: "Wrong username/password combination!" });
+            res.json({
+              // if it exists but password is wrong send message
+              auth: false, 
+              message: "wrong username or password."
+            });
           }
         });
       } else {
-        res.send({ message: "User doesn't exist" });
+        // if it doesnt exist send message.
+       res.json({
+         auth: false, 
+         message: "no user exists. please check user name or register."
+        });
       }
     }
   );

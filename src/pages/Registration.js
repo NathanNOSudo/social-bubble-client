@@ -8,8 +8,8 @@ export default function Registration() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
-  const [loginStatus, setLoginStatus] = useState("");
+// ********* NOTE:************** loginStatus is basically the user name... I should have just used username or a different name......
+  const [loginStatus, setLoginStatus] = useState(false);
 
   Axios.defaults.withCredentials = true;
 
@@ -27,10 +27,12 @@ export default function Registration() {
       username: username,
       password: password,
     }).then((response) => {
-      if (response.data.message) {
-        setLoginStatus(response.data.message);
+      console.log(response);
+      if (response.data.auth) {
+        setLoginStatus(false);
       } else {
-        setLoginStatus(response.data[0].username);
+        console.log(response.data);
+        setLoginStatus(true);
       }
     });
   };
@@ -82,7 +84,9 @@ export default function Registration() {
         />
         <button onClick={login}> Login </button>
       </div>
-
+      {loginStatus && (
+        <button>check if authenticated</button>
+      )}
       <h1>{loginStatus}</h1>
     </div>
   );
