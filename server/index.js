@@ -9,6 +9,9 @@ const session = require("express-session");
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 
+// REQUIRE JSON WEB TOKEN 
+const jwt = require('jsonwebtoken')
+
 const app = express();
 
 app.use(express.json());
@@ -68,6 +71,8 @@ app.get("/login", (req, res) => {
   }
 });
 
+//grab user name and password to check authorization and check comparison between user and password
+// create a session sends result.
 app.post("/login", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
@@ -83,9 +88,18 @@ app.post("/login", (req, res) => {
       if (result.length > 0) {
         bcrypt.compare(password, result[0].password, (error, response) => {
           if (response) {
+            // WE WANT THE ID BECAUSE WE NEED TO CREATE OUR TOKEN WITH THAT
+            const id = result[0].id
+            // IMPORTANT: WE NEED TO PUT jwtSecret from line 96 in the .env file and pass it in through a variable 
+            const token = jwt.sign({id}, "jwtSecret", {
+              // VALUE FOR TOKEN EXPIRATION 300= 5 minutes
+              expiresIn: 300,
+            })
             req.session.user = result;
+            // WE HAVE TO SEND TOKEN TO FRONT END
+          // check if user is authorized then pass token we createad and pass all results all info from users: id, username, role, group whatever.
+            res.json({auth: true, token: token, result: result});
             console.log(req.session.user);
-            res.send(result);
           } else {
             res.send({ message: "Wrong username/password combination!" });
           }
